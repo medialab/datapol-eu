@@ -47,7 +47,7 @@ for youtube_lru in YOUTUBE_LRUS:
 
     node = traph.lru_trie.lru_node(youtube_lru)
 
-    if not node.exists:
+    if not node or not node.exists:
         continue
 
     for node, lru in traph.lru_trie.webentity_dfs_iter(node, youtube_lru):

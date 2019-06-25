@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import re
 import sys
@@ -16,12 +18,14 @@ except:
 import requests
 from ural import normalize_url
 
+
 CACHE_USERS_CHANNELS = {}
 try:
     with open(".cache_users_channels.json") as f:
         CACHE_USERS_CHANNELS = json.load(f)
 except:
     pass
+
 
 def clean_url(url):
     if url.endswith("/live"):
@@ -40,6 +44,7 @@ def clean_url(url):
     url = url.replace('youtu.be/channel/', 'youtube.com/channel/')
     url = url.replace('youtube.com/profile?user=', 'youtube.com/user/')
     return url
+
 
 def parse_youtube_url(url):
     url = clean_url(url)
@@ -119,6 +124,7 @@ def parse_youtube_url(url):
             return "user", stem0
     return "error", None
 
+
 def get_channel_from_url(u, cache_videos_channels={}):
     try:
         typ, uid = parse_youtube_url(u)
@@ -134,6 +140,7 @@ def get_channel_from_url(u, cache_videos_channels={}):
     except Exception as e:
         pass
 
+
 def get_channel_from_user_id(uid, url):
     if uid in CACHE_USERS_CHANNELS:
         return CACHE_USERS_CHANNELS[uid]
@@ -143,6 +150,7 @@ def get_channel_from_user_id(uid, url):
         with open(".cache_users_channels.json", "w") as f:
             json.dump(CACHE_USERS_CHANNELS, f)
     return channel
+
 
 re_link_canonical = re.compile(r'<link rel="canonical" href="https://www.youtube.com/channel/([^"]+)">', re.I)
 def resolve_user_channel(url, retry=5):
@@ -157,6 +165,7 @@ def resolve_user_channel(url, retry=5):
             return resolve_user_channel(url, retry-1)
         print >> sys.stderr, "WARNING: could not resolve channel for user %" % uid
 
+
 def get_channel_from_video_id(vid, cache_videos_channels={}):
     if vid in cache_videos_channels:
         return cache_videos_channels[vid]
@@ -165,6 +174,7 @@ def get_channel_from_video_id(vid, cache_videos_channels={}):
         with open(".cache_users_channels.json", "w") as f:
             json.dump(CACHE_USERS_CHANNELS, f)
     return channel
+
 
 def get_cache_videos_channels(csvfile="full_videos.csv", vid_field="yt_video_id", cid_field="yt_channel_id"):
     cache = {}
@@ -177,6 +187,7 @@ def get_cache_videos_channels(csvfile="full_videos.csv", vid_field="yt_video_id"
     except Exception as e:
         print >> sys.stderr, "ERROR %s %s, could not read videos metas csv %s with fields %s %s" % (type(e), e, csvfile, vid_field, cid_field)
         return cache
+
 
 if __name__ == "__main__":
     csv_file = sys.argv[1] if len(sys.argv) > 1 else "youtube-inlinks.csv"
@@ -191,5 +202,3 @@ if __name__ == "__main__":
                     print ",".join([l["webentity"], l["source_url"], l[csv_field], channel])
             except Exception as e:
                 print >> sys.stderr, "ERROR %s: %s" % (type(e), e), l
-
-

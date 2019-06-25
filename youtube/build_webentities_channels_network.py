@@ -31,6 +31,13 @@ def add_edge_weight(graph, node1, node2):
         graph.add_edge(node1, node2, weight=0)
     graph[node1][node2]['weight'] += 1
 
+def safe_int(s):
+    if not s:
+        return 0
+    try:
+        return int(s)
+    except:
+        return int(float(s))
 
 if __name__ == "__main__":
 
@@ -49,7 +56,7 @@ if __name__ == "__main__":
     with open(csv_YT) as f:
         for channel in csv.DictReader(f):
             channels[channel["yt_channel_id"]] = True
-            add_node(G, channel["yt_channel_id"], label=channel["nom_de_la_chaine"], url=channel["lien_de_la_chaine"], categorie=channel["category"], origine=channel["pays_chaine"], langue=channel["langue_chaine"], likes=int(channel["likes_totaux"]), abonnes=int(channel["abonnes"]), vues=int(channel["vues"]), videos=int(channel["videos_publiees"]), WE_type="channel YouTube")
+            add_node(G, channel["yt_channel_id"], label=channel["nom_de_la_chaine"], url=channel["lien_de_la_chaine"], categorie=channel["category"], origine=channel["pays_chaine"], langue=channel["langue_chaine"], likes=safe_int(channel["likes_totaux"]), abonnes=safe_int(channel["abonnes"]), vues=safe_int(channel["vues"]), videos=safe_int(channel["videos_publiees"]), WE_type="channel YouTube")
 
     with open(links_WE_YT) as f:
         for l in csv.DictReader(f):

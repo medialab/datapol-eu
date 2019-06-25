@@ -1,11 +1,23 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Liens WEs -> Channels
+# Liens Channels -> WEs
+# Liens WEs -> WEs
+# Liens Channels -> Channels
+# - featured (choice of channels)               <-
+# - related (algo youtube similarity)
+# - recommanded (algo youtube recommandation)
 
 import csv
+
 import networkx as nx
 
 
 def add_node(graph, node, *attrs, **kwargs):
     if not graph.has_node(node):
         graph.add_node(node, **kwargs)
+
 
 def add_edge_weight(graph, node1, node2):
     if not graph.has_node(node1):
@@ -18,14 +30,6 @@ def add_edge_weight(graph, node1, node2):
         graph.add_edge(node1, node2, weight=0)
     graph[node1][node2]['weight'] += 1
 
-
-# Liens WEs -> Channels
-# Liens Channels -> WEs
-# Liens WEs -> WEs
-# Liens Channels -> Channels
-# - featured (choice of channels)               <-
-# - related (algo youtube similarity)
-# - recommanded (algo youtube recommandation)
 
 if __name__ == "__main__":
     csv_WE = sys.argv[1] if len(sys.argv) > 1 else "Polarisation post élections EU.csv"

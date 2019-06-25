@@ -52,11 +52,15 @@ if __name__ == "__main__":
 
     with open(csv_WE) as f:
         for WE in csv.DictReader(f):
+            for k in WE:
+                WE[k] = WE[k].decode("utf-8")
             add_node(G, WE["ID"], label=WE["NAME"], url=WE["HOME PAGE"], portee=WE["Portée (TAGS)"], fondation=WE["fondation (TAGS)"], batch=WE["batch (TAGS)"], edito=WE["edito (TAGS)"], parodique=WE["Parodique (TAGS)"], origine=WE["origine (TAGS)"], digital_nativeness=WE["digital nativeness (TAGS)"], WE_type=WE["type (TAGS)"], sexe=WE["Sexe (TAGS)"], parti=WE["Parti (TAGS)"], liste=WE["Liste (TAGS)"])
 
     channels = {}
     with open(csv_YT) as f:
         for channel in csv.DictReader(f):
+            for k in channel:
+                channel[k] = channel[k].decode("utf-8")
             channels[channel["yt_channel_id"]] = True
             add_node(G, channel["yt_channel_id"], label=channel["nom_de_la_chaine"], url=channel["lien_de_la_chaine"], categorie=channel["category"], origine=channel["pays_chaine"], langue=channel["langue_chaine"], likes=safe_int(channel["likes_totaux"]), abonnes=safe_int(channel["abonnes"]), vues=safe_int(channel["vues"]), videos=safe_int(channel["videos_publiees"]), WE_type="channel YouTube")
 

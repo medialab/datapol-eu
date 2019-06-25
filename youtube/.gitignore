@@ -2,5 +2,6 @@
 *.csv.gz
 *.csv.zip
 *.json
+*.gexf
 *.pyc
 *-traph

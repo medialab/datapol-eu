@@ -3,7 +3,6 @@ import re
 import sys
 import json
 import time
-import requests
 import warnings
 warnings.filterwarnings("ignore")
 try:
@@ -13,6 +12,7 @@ except:
     from urlparse import urlparse
     from urllib2 import unquote
 
+import requests
 from ural import normalize_url
 
 CACHE_USERS_CHANNELS = {}
@@ -118,10 +118,6 @@ def parse_youtube_url(url):
             return "user", stem0
     return "error", None
 
-def _extract_YT_video_id(u):
-    l["yt_video_id"]  = [q.split("=")[1] for q in u.split("?")[-1].split("&") if q.startswith("v=")][0]
-    pass
-
 def get_channel_from_url(u, cache_videos_channels={}):
     try:
         typ, uid = parse_youtube_url(u)
@@ -137,6 +133,16 @@ def get_channel_from_url(u, cache_videos_channels={}):
     except Exception as e:
         pass
 
+def get_channel_from_user_id(uid, url):
+    if uid in CACHE_USERS_CHANNELS:
+        return CACHE_USERS_CHANNELS[uid]
+    channel = resolve_user_channel(url)
+    if channel:
+        CACHE_USERS_CHANNELS[uid] = channel
+        with open(".cache_users_channels.json", "w") as f:
+            json.dump(CACHE_USERS_CHANNELS, f)
+    return channel
+
 re_link_canonical = re.compile(r'<link rel="canonical" href="https://www.youtube.com/channel/([^"]+)">', re.I)
 def resolve_user_channel(url, retry=5):
     try:
@@ -149,16 +155,6 @@ def resolve_user_channel(url, retry=5):
             time.sleep(1)
             return resolve_user_channel(url, retry-1)
         print >> sys.stderr, "WARNING: could not resolve channel for user %" % uid
-
-def get_channel_from_user_id(uid, url):
-    if uid in CACHE_USERS_CHANNELS:
-        return CACHE_USERS_CHANNELS[uid]
-    channel = resolve_user_channel(url)
-    if channel:
-        CACHE_USERS_CHANNELS[uid] = channel
-        with open(".cache_users_channels.json", "w") as f:
-            json.dump(CACHE_USERS_CHANNELS, f)
-    return channel
 
 def get_channel_from_video_id(vid, cache_videos_channels={}):
     if vid in cache_videos_channels:

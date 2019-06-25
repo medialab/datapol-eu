@@ -37,7 +37,7 @@ if __name__ == "__main__":
     csv_WE = sys.argv[1] if len(sys.argv) > 1 else "Polarisation post élections EU.csv"
     csv_YT = sys.argv[2] if len(sys.argv) > 2 else "full_channels.csv"
     links_WE_YT = sys.argv[3] if len(sys.argv) > 3 else "links_webentities_channels.csv"
-    links_YT_WE = sys.argv[4] if len(sys.argv) > 4 else "links_channels_webentities.csv"
+    links_YT_WE = sys.argv[4] if len(sys.argv) > 4 else "youtube-to-corpus.csv"
 
     G = nx.DiGraph()
 
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     with open(csv_YT) as f:
         for channel in csv.DictReader(f):
             channels[channel["yt_channel_id"]] = True
-            add_node(G, channel["yt_channel_id"], label=channel["nom_de_la_chaine"], url=channel["lien_de_la_chaine"], categorie=channel["category"], pays=channel["pays_chaine"], langue=channel["langue_chaine"], likes=channel["likes_totaux"], abonnes=channel["abonnes"], vues=channel["vues"], videos=channel["videos_publiees"])
+            add_node(G, channel["yt_channel_id"], label=channel["nom_de_la_chaine"], url=channel["lien_de_la_chaine"], categorie=channel["category"], origine=channel["pays_chaine"], langue=channel["langue_chaine"], likes=int(channel["likes_totaux"]), abonnes=int(channel["abonnes"]), vues=int(channel["vues"]), videos=int(channel["videos_publiees"]), WE_type="channel YouTube")
 
     with open(links_WE_YT) as f:
         for l in csv.DictReader(f):
@@ -57,10 +57,10 @@ if __name__ == "__main__":
                 continue
             add_edge_weight(G, l["webentity_id"], l["yt_channel_id"])
 
-    #with open(links_YT_WE) as f:
-    #    for l in csv.DictReader(f):
-    #        if not l["webentity"]:
-    #            continue
-    #        add_edge_weight(G, l["channel"], l["webentity"])
+    with open(links_YT_WE) as f:
+        for l in csv.DictReader(f):
+            if not l["webentity"]:
+                continue
+            add_edge_weight(G, l["channel"], l["webentity"])
 
     nx.write_gexf(G, "webentities_YTchannels.gexf")

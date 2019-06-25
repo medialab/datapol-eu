@@ -1,4 +1,6 @@
 *.csv
+*.csv.gz
+*.csv.zip
+*.json
 *.pyc
-sample-traph
-
+*-traph

@@ -1,6 +1,7 @@
 
 import re
 import sys
+import csv
 import json
 import time
 import warnings
@@ -178,7 +179,6 @@ def get_cache_videos_channels(csvfile="full_videos.csv", vid_field="yt_video_id"
         return cache
 
 if __name__ == "__main__":
-    import csv
     csv_file = sys.argv[1] if len(sys.argv) > 1 else "youtube-inlinks.csv"
     csv_field = sys.argv[2] if len(sys.argv) > 2 else "youtube_url"
     cache_videos_channels = get_cache_videos_channels()

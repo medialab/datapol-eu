@@ -1,3 +1,4 @@
 hyphe-traph
 requests
 ural
+tqdm

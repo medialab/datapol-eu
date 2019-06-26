@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 
 import re
 import sys
@@ -9,8 +10,8 @@ import time
 import warnings
 warnings.filterwarnings("ignore")
 try:
-    from urlib.parse import urlparse
-    from urllib import unquote
+    from urllib.parse import urlparse
+    from urllib.parse import unquote
 except:
     from urlparse import urlparse
     from urllib2 import unquote
@@ -55,8 +56,8 @@ def parse_youtube_url(url):
         if "/" not in u:
             return "home", None
         url_id = u.split("/")[1]
-        url_id = u.split("?")[0]
-        url_id = u.split("%")[0]
+        url_id = url_id.split("?")[0]
+        url_id = url_id.split("%")[0]
         return "video", url_id
     # URL pattern youtube.googleapis.com/v/VIDEO_ID
     if parsed.netloc == 'youtube.googleapis.com':
@@ -163,7 +164,7 @@ def resolve_user_channel(url, retry=5):
         if retry:
             time.sleep(1)
             return resolve_user_channel(url, retry-1)
-        print >> sys.stderr, "WARNING: could not resolve channel for user %" % uid
+        print("WARNING: could not resolve channel for user %" % uid, file=sys.stderr)
 
 
 def get_channel_from_video_id(vid, cache_videos_channels={}):
@@ -185,7 +186,7 @@ def get_cache_videos_channels(csvfile="full_videos.csv", vid_field="yt_video_id"
                 cache[v[vid_field]] = v[cid_field]
         return cache
     except Exception as e:
-        print >> sys.stderr, "ERROR %s %s, could not read videos metas csv %s with fields %s %s" % (type(e), e, csvfile, vid_field, cid_field)
+        print("ERROR %s %s, could not read videos metas csv %s with fields %s %s" % (type(e), e, csvfile, vid_field, cid_field), file=sys.stderr)
         return cache
 
 
@@ -193,12 +194,12 @@ if __name__ == "__main__":
     csv_file = sys.argv[1] if len(sys.argv) > 1 else "youtube-inlinks.csv"
     csv_field = sys.argv[2] if len(sys.argv) > 2 else "youtube_url"
     cache_videos_channels = get_cache_videos_channels()
-    print "webentity_id,source_url,target_url,yt_channel_id"
+    print("webentity_id,source_url,target_url,yt_channel_id")
     with open(csv_file) as f:
         for l in csv.DictReader(f):
             try:
                 channel = get_channel_from_url(l[csv_field])
                 if channel:
-                    print ",".join([l["webentity"], l["source_url"], l[csv_field], channel])
+                    print(",".join([l["webentity"], l["source_url"], l[csv_field], channel])
             except Exception as e:
-                print >> sys.stderr, "ERROR %s: %s" % (type(e), e), l
+                print("ERROR %s: %s" % (type(e), e), l, file=sys.stderr)

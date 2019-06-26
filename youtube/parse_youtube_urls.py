@@ -200,6 +200,6 @@ if __name__ == "__main__":
             try:
                 channel = get_channel_from_url(l[csv_field])
                 if channel:
-                    print(",".join([l["webentity"], l["source_url"], l[csv_field], channel])
+                    print(",".join([l["webentity"], l["source_url"], l[csv_field], channel]))
             except Exception as e:
                 print("ERROR %s: %s" % (type(e), e), l, file=sys.stderr)
